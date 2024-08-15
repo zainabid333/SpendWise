@@ -1,0 +1,18 @@
+{
+  "name": "spendwise",
+  "version": "1.0.0",
+  "description": "A Node.js based web app for expense management with user accounts, expense graphs and goals for saving.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "express-handlebars": "^8.0.1",
+    "sequelize": "^6.37.3"
+  }
+}
