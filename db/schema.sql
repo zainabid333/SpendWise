@@ -1,0 +1,2 @@
+DROP DATABASE IF EXISTS expensewise;
+CREATE DATABASE expensewise;
