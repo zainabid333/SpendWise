@@ -19,7 +19,7 @@ db.sequelize.sync({ force: false }).then(() => {
 app.use("/auth", authRoutes);
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    secret: "MySuperDooperSecretKey",
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false }, // Set to true if using HTTPS
@@ -37,7 +37,7 @@ sequelize
   });
 
 //Routes
-app.get("")
+app.get("");
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
