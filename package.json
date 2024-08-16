@@ -24,8 +24,8 @@
 
   "devDependencies": {
     "nodemon": "^3.1.4"
-  "eslintConfig": 
-    "extends": ["prettier"]
-  
-  }
+  },
+  "eslintConfig":{
+      "extends": ["prettier"]
+    }
 }
