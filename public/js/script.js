@@ -16,17 +16,6 @@ const dummyTransactions = [
 
 let transactions = dummyTransactions;
 
-// LocalStorage is not enabled in CodePen for security reasons
-// const localStorageTransactions = JSON.parse(
-//   localStorage.getItem("transactions")
-// );
-// let transactions =
-//   localStorageTransactions !== null ? localStorageTransactions : [];
-
-// function updateLocaleStorage() {
-//   localStorage.setItem("transactions", JSON.stringify(transactions));
-// }
-
 function showNotification() {
   notification.classList.add('show');
   setTimeout(() => {
