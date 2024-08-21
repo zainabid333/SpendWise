@@ -1,12 +1,18 @@
 const express = require('express');
-const path = require('path');
 const session = require('express-session');
 const exphbs = require('express-handlebars');
+const path = require('path');
+const userRoutes = require('./routes/userRoutes');
+const transactionRoutes = require('./routes/transactionRoutes');
+const {
+  isAuthenticated,
+  isNotAuthenticated,
+} = require('./middleware/authMiddleware');
 const sequelize = require('./config/connection');
-const authRoutes = require('./controllers/auth');
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
+
 const app = express();
 const PORT = process.env.PORT || 3000;
-
 const db = require('./models');
 app.engine('handlebars', exphbs.engine());
 app.set('view engine', 'handlebars');
@@ -21,7 +27,7 @@ db.sequelize.sync({ force: false }).then(() => {
 });
 
 //session middleware
-app.use('/auth', authRoutes);
+
 app.use(
   session({
     secret: 'MySuperDooperSecretKey',
@@ -42,6 +48,10 @@ sequelize
   });
 
 //Routes
+
+app.use('/api/users', userRoutes);
+app.use('/api/transactions', transactionRoutes);
+
 app.get('');
 app.get('/', (req, res) => {
   res.render('home');
