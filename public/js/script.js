@@ -93,4 +93,74 @@ function init() {
 
 init();
 
+console.clear();
+
+// you can find the server side code at 'https://repl.it/@mauriciolobo/expensetracker'
+// Just replace with you address and start playing arround
+var url = 'https://expensetracker--mauriciolobo.repl.co/';
+
+Vue.filter('money', (v) => {
+  return '$' + parseFloat(v).toFixed(2);
+});
+
+var app = new Vue({
+  el: '#app',
+
+  data() {
+    return {
+      transactions: [],
+      transaction: {},
+    };
+  },
+
+  computed: {
+    balance() {
+      return this.transactions.reduce((c, p) => c + p.amount, 0);
+    },
+
+    income() {
+      return this.transactions
+        .filter((f) => f.amount > 0)
+        .reduce((c, p) => c + p.amount, 0);
+    },
+
+    expense() {
+      return this.transactions
+        .filter((f) => f.amount < 0)
+        .reduce((c, p) => c + p.amount, 0);
+    },
+  },
+
+  methods: {
+    get() {
+      axios
+        .get(url)
+        .then((r) => r.data)
+        .then((r) =>
+          r.map((m) => {
+            return { ...m, amount: parseFloat(m.amount) };
+          })
+        )
+        .then((r) => (this.transactions = r));
+    },
+
+    add() {
+      axios
+        .post(url, this.transaction)
+        .then((t) => t.data)
+        .then(() => {
+          this.transaction = {};
+        })
+        .then(() => {
+          this.get();
+        })
+        .catch(console.error);
+    },
+  },
+
+  mounted() {
+    this.get();
+  },
+});
+
 form.addEventListener('submit', addTransaction);

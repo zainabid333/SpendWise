@@ -3,8 +3,7 @@ const path = require('path');
 const session = require('express-session');
 const exphbs = require('express-handlebars');
 const sequelize = require('./config/connection');
-const authRoutes = require('./routes/auth');
-
+const authRoutes = require('./controllers/auth');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -46,6 +45,18 @@ sequelize
 app.get('');
 app.get('/', (req, res) => {
   res.render('home');
+});
+
+app.get('/transactions', (req, res) => {
+  res.render('transaction');
+});
+
+app.get('/newUserPortal', (req, res) => {
+  res.render('newUserPortal');
+});
+
+app.get('/login', (req, res) => {
+  res.render('login');
 });
 
 app.listen(PORT, () => {
