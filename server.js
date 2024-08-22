@@ -69,6 +69,10 @@ app.get('/login', (req, res) => {
   res.render('login');
 });
 
+app.get('/expenses', (req, res) => {
+  res.render('expenses');
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
