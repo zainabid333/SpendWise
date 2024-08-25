@@ -79,10 +79,15 @@ router.post('/', isAuthenticated, async (req, res) => {
 // Delete expense
 router.delete('/:id', isAuthenticated, async (req, res) => {
   try {
-    await Expense.destroy({
-      where: { id: req.params.id, userId: req.session.userId }, // Ensure 'userId' matches your column name
+    const result = await Expense.destroy({
+      where: { id: req.params.id, userId: req.session.userId }, // Ensure userId matches
     });
-    res.sendStatus(200);
+
+    if (result) {
+      res.sendStatus(200);
+    } else {
+      res.status(404).json({ message: 'Expense not found' });
+    }
   } catch (error) {
     console.error('Error deleting expense:', error);
     res.status(400).json({ message: 'Failed to delete expense.' });
