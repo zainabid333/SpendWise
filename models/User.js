@@ -1,20 +1,9 @@
-const { Model, DataTypes } = require('sequelize');
-const bcrypt = require('bcrypt');
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/connection");
+const bcrypt = require("bcryptjs");
 
-class User extends Model {
-  static associate(models) {
-    User.hasMany(models.Transaction, {
-      foreignKey: 'userId',
-      as: 'transactions',
-    });
-  }
-
-  async comparePassword(candidatePassword) {
-    return await bcrypt.compare(candidatePassword, this.password);
-  }
-}
-
-User.init(
+const User = sequelize.define(
+  "User",
   {
     username: {
       type: DataTypes.STRING,
@@ -35,8 +24,6 @@ User.init(
     },
   },
   {
-    sequelize: require('../config/connection'),
-    modelName: 'User',
     hooks: {
       beforeCreate: async (user) => {
         if (user.password) {
@@ -44,8 +31,25 @@ User.init(
           user.password = await bcrypt.hash(user.password, salt);
         }
       },
+      beforeUpdate: async (user) => {
+        if (user.changed("password")) {
+          const salt = await bcrypt.genSalt(10);
+          user.password = await bcrypt.hash(user.password, salt);
+        }
+      },
     },
   }
 );
+
+User.prototype.validPassword = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
+
+User.associate = function (models) {
+  User.hasMany(models.Expense, {
+    foreignKey: "userId", // Explicitly set the foreign key
+    as: "expenses", // Use an alias consistently with Expense model
+  });
+};
 
 module.exports = User;

@@ -1,19 +1,37 @@
-<html lang='en'>
+<html lang="en">
   <head>
-    <meta charset='UTF-8' />
-    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-    <title>ExpenseWise</title>
-    <link rel='stylesheet' href='/css/style.css' />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="/css/style.css" />
   </head>
-  <body>
-    <header>{{{navbar}}}
+  <body class="bg-gray-100 min-h-screen">
+    <header class="bg-blue-600 text-white p-4">
+      <nav class="container mx-auto flex justify-between items-center">
+        <a href="/" class="text-2xl font-bold">Expense Tracker</a>
+        <div>
+          {{#if user}}
+            <a href="/dashboard" class="mr-4 hover:underline">Dashboard</a>
+            <a href="/expenses" class="mr-4 hover:underline">Expenses</a>
+            <a href="/graph" class="mr-4 hover:underline">Graphs</a>
+
+            <a href="/auth/logout" class="hover:underline">Logout</a>
+          {{else}}
+            <a href="/login" class="mr-4 hover:underline">Login</a>
+            <a href="/signup" class="hover:underline">Signup</a>
+          {{/if}}
+        </div>
+      </nav>
     </header>
-    <main>
+
+    <main class="container mx-auto mt-8 p-4">
       {{{body}}}
     </main>
-    <footer>
-      {{{footer}}}
+
+    <footer class="bg-gray-200 text-center p-4 mt-8">
+      <p>&copy; 2024 Expense Tracker</p>
     </footer>
-    <script src='/js/script.js'></script>
+
+    <script src="/js/main.js"></script>
   </body>
 </html>

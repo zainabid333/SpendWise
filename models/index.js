@@ -1,12 +1,8 @@
-// models/index.js
-const Sequelize = require('sequelize');
-const sequelize = require('../config/connection');
-const UserModel = require('./User');
+const User = require("./User");
+const Expense = require("./Expense");
 
-const User = new UserModel(sequelize);
+// Call the associate method on both models
+User.associate({ Expense });
+Expense.associate({ User });
 
-module.exports = {
-  sequelize,
-  Sequelize,
-  User,
-};
+module.exports = { User, Expense };
