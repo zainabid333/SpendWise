@@ -1,9 +1,9 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/connection");
-const bcrypt = require("bcryptjs");
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/connection');
+const bcrypt = require('bcryptjs');
 
 const User = sequelize.define(
-  "User",
+  'User',
   {
     username: {
       type: DataTypes.STRING,
@@ -32,7 +32,7 @@ const User = sequelize.define(
         }
       },
       beforeUpdate: async (user) => {
-        if (user.changed("password")) {
+        if (user.changed('password')) {
           const salt = await bcrypt.genSalt(10);
           user.password = await bcrypt.hash(user.password, salt);
         }
@@ -44,12 +44,17 @@ const User = sequelize.define(
 User.prototype.validPassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
-
-User.associate = function (models) {
-  User.hasMany(models.Expense, {
-    foreignKey: "userId", // Explicitly set the foreign key
-    as: "expenses", // Use an alias consistently with Expense model
+//Budget calculation
+User.prototype.calculateBudget = async function (name) {
+  const totalIncome = await this.getIncome({
+    attributes: [[sequelize.fn('sum', sequelize.col('amount')), 'total']],
   });
+  const totalExpense = await this.getExpense({
+    attributes: [[sequelize.fn('sum', sequelize.col('amount')), 'total']],
+  });
+  const incomeTotal = totalIncome[0].dataValues.total || 0;
+  const expenseTotal = totalExpense[0].dataValues.total || 0;
+  return incomeTotal - expenseTotal;
 };
 
 module.exports = User;

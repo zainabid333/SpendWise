@@ -1,7 +1,8 @@
+//Models/Income
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/connection');
 
-const Expense = sequelize.define('Expense', {
+const Income = sequelize.define('Income', {
   amount: {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false,
@@ -17,4 +18,4 @@ const Expense = sequelize.define('Expense', {
   },
 });
 
-module.exports = Expense;
+module.exports = Income;
