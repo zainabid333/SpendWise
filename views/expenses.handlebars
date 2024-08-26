@@ -30,13 +30,19 @@
       </div>
       <div>
         <label for='category' class='block mb-1'>Category:</label>
-        <input
+        <select
           type='text'
           id='category'
           name='category'
           required
           class='w-full px-3 py-2 border rounded'
-        />
+        >
+          <option value='' disabled selected>Select Category</option>
+          {{#each categories}}
+            <option value='{{this.id}}'>{{this.name}}</option>
+          {{/each}}
+          <option value='new'>Add new Category</option>
+        </select>
       </div>
       <div>
         <label for='date' class='block mb-1'>Date:</label>
@@ -54,6 +60,38 @@
       class='mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600'
     >Add Expense</button>
   </form>
+
+  {{! //Modal form for adding category }}
+  <div id='newCategoryModal' class='fixed z-10 inset-0 overflow-y-auto hidden'>
+    <div class='flex items-center justify-center min-h-screen'>
+      <div class='bg-white shadow-lg rounded-lg p-6'>
+        <h2 class='text-xl font-bold mb-4'>Add New Category</h2>
+        <form id='newCategoryForm' action='/categories' method='POST'>
+          <div class='mb-4'>
+            <label for='newCategoryName' class='block mb-1'>Category Name:</label>
+            <input
+              type='text'
+              id='newCategoryName'
+              name='name'
+              required
+              class='w-full px-3 py-2 border rounded'
+            />
+          </div>
+          <div class='flex justify-end'>
+            <button
+              type='button'
+              id='closeModalBtn'
+              class='mr-2 bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600'
+            >Cancel</button>
+            <button
+              type='submit'
+              class='bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600'
+            >Add Category</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <form
     action='/expenses/filter'
@@ -113,11 +151,11 @@
               <td>
                 <button
                   type='button'
-                  class='delete-expense text-center'
+                  class='delete-expense items-center'
                   data-id='{{this.id}}'
                   title='Delete'
                 >
-                  <i class='fas fa-trash'></i>
+                  <i class='fas fa-trash text-center'></i>
 
                 </button>
 

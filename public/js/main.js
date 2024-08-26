@@ -10,9 +10,28 @@ document.addEventListener('DOMContentLoaded', function () {
       createExpensesChart();
     }
 
+    const dateInput = document.getElementById('date');
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.value = today;
     const deleteButtons = document.querySelectorAll('.delete-expense');
     deleteButtons.forEach((button) => {
       button.addEventListener('click', deleteExpense);
+    });
+    const categorySelect = document.getElementById('category');
+    const modal = new bootstrap.Modal(
+      document.getElementById('newCategoryModal')
+    );
+    const closeModalButton = document.getElementById('closeModalButton');
+
+    //Open Modal form
+    categorySelect.addEventListener('change', function () {
+      if (categorySelect.value === 'new') {
+        modal.classList.remove('hidden');
+      }
+    });
+    closeModalButton.addEventListener('click', function () {
+      modal.classList.add('hidden');
+      categorySelect.value = '';
     });
   } catch (error) {
     console.error('Error initializing page:', error);

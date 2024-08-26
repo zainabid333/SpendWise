@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Expense, User } = require('../models');
+const { Expense, User, Category } = require('../models');
 const { Op } = require('sequelize');
 
 // Middleware to check if user is logged in
@@ -14,12 +14,13 @@ const isAuthenticated = (req, res, next) => {
 // Get all expenses
 router.get('/', isAuthenticated, async (req, res) => {
   try {
+    const categories = await Category.findAll();
     const expenses = await Expense.findAll({
       where: { userId: req.session.userId }, // Ensure userId matches your model field
       include: [{ model: User, as: 'user', attributes: ['username'] }], // Correct alias usage
       raw: false, // Remove raw: true to ensure eager-loading works properly
     });
-    res.render('expenses', { expenses });
+    res.render('expenses', { expenses, categories });
   } catch (error) {
     console.error('Error fetching expenses:', error);
     res.status(500).render('error', { message: 'Failed to fetch expenses.' });
