@@ -2,7 +2,12 @@ const express = require('express');
 const router = express.Router();
 const { Income } = require('../models');
 
-//Create income
+// Render income form
+router.get('/', (req, res) => {
+  res.render('income');
+});
+
+// Create income
 router.post('/', async (req, res) => {
   try {
     const income = await Income.create({
@@ -17,7 +22,8 @@ router.post('/', async (req, res) => {
     res.status(500).json(err);
   }
 });
-//Get all income
+
+// Get all income
 router.get('/', async (req, res) => {
   try {
     const income = await Income.findAll({
@@ -31,4 +37,5 @@ router.get('/', async (req, res) => {
     res.status(500).json(err);
   }
 });
+
 module.exports = router;

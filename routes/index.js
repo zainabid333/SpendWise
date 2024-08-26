@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const { User, Expense, Category, Income } = require('../models');
-const session = require('express-session');
 
 // Middleware to check if user is logged in
 const isAuthenticated = (req, res, next) => {
@@ -80,7 +79,7 @@ router.get('/dashboard', (req, res) => {
   })
     .then((user) => {
       if (user) {
-        const totalIncome = user.income.reduce(
+        const totalIncome = user.incomes.reduce(
           (total, income) => total + parseFloat(income.amount),
           0
         );

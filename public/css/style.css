@@ -907,6 +907,10 @@ video {
     width: 40%;
   }
 
+  .lg\:w-3\/5 {
+    width: 60%;
+  }
+
   .lg\:flex-row {
     flex-direction: row;
   }

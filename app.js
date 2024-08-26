@@ -53,7 +53,9 @@ app.use((req, res, next) => {
 app.use('/', require('./routes/index'));
 app.use('/auth', require('./routes/auth'));
 app.use('/expenses', require('./routes/expenses'));
+app.use('/income', require('./routes/income'));
 app.use('/categories', require('./routes/categories'));
+
 sequelize.sync({ force: false }).then(() => {
   app.listen(PORT, () => console.log(`Now listening on port ${PORT}`));
 });
