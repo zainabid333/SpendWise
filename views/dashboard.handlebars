@@ -1,48 +1,48 @@
-<html lang="en">
+<html lang='en'>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset='UTF-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
     <title>Dashboard</title>
-    <link rel="stylesheet" href="/css/style.css" />
+    <link rel='stylesheet' href='/css/style.css' />
     <style>
       .expense-item:nth-child(even) { background-color: #f3f4f6; }
       .expense-item:nth-child(odd) { background-color: #ffffff; }
     </style>
   </head>
-  <body class="bg-gray-100">
-    <div class="max-w-7xl mx-auto px-4 py-8">
-      <h2 class="text-2xl font-bold mb-6">Welcome, {{user.username}}!</h2>
-      <div class="bg-white shadow rounded p-6 mb-8">
-        <h3 class="text-xl font-semibold mb-4">Your Profile</h3>
-        <p class="mb-2"><span class="font-semibold">Username:</span>
+  <body class='bg-gray-100'>
+    <div class='max-w-7xl mx-auto px-4 py-8'>
+      <h2 class='text-2xl font-bold mb-6'>Welcome, {{user.username}}!</h2>
+      <div class='bg-white shadow rounded p-6 mb-8'>
+        <h3 class='text-xl font-semibold mb-4'>Your Profile</h3>
+        <p class='mb-2'><span class='font-semibold'>Username:</span>
           {{user.username}}</p>
-        <p><span class="font-semibold">Email:</span> {{user.email}}</p>
+        <p><span class='font-semibold'>Email:</span> {{user.email}}</p>
       </div>
 
-      <div class="flex flex-col lg:flex-row gap-8">
-        <div class="bg-blue-50 shadow rounded p-6 lg:w-2/5">
-          <h3 class="text-xl font-semibold mb-4">Recent Transactions</h3>
-          <div class="overflow-x-auto">
-            <table class="w-full table-auto">
+      <div class='flex flex-col lg:flex-row gap-8'>
+        <div class='bg-blue-50 shadow rounded p-6 lg:w-2/5'>
+          <h3 class='text-xl font-semibold mb-4'>Recent Transactions</h3>
+          <div class='overflow-x-auto'>
+            <table class='w-full table-auto'>
               <thead>
-                <tr class="bg-blue-100">
-                  <th class="px-4 py-2 text-left">Description</th>
-                  <th class="px-4 py-2 text-left">Amount</th>
-                  <th class="px-4 py-2 text-left">Category</th>
-                  <th class="px-4 py-2 text-left">Date</th>
+                <tr class='bg-blue-100'>
+                  <th class='px-4 py-2 text-left'>Description</th>
+                  <th class='px-4 py-2 text-left'>Amount</th>
+                  <th class='px-4 py-2 text-left'>Category</th>
+                  <th class='px-4 py-2 text-left'>Date</th>
                 </tr>
               </thead>
               <tbody>
                 {{#each user.expenses}}
-                  <tr class="expense-item">
-                    <td class="border px-4 py-2">{{this.description}}</td>
-                    <td class="border px-4 py-2">${{this.amount}}</td>
-                    <td class="border px-4 py-2">{{this.category}}</td>
-                    <td class="border px-4 py-2">{{formatDate this.date}}</td>
+                  <tr class='expense-item'>
+                    <td class='border px-4 py-2'>{{this.description}}</td>
+                    <td class='border px-4 py-2'>${{this.amount}}</td>
+                    <td class='border px-4 py-2'>{{this.category}}</td>
+                    <td class='border px-4 py-2'>{{formatDate this.date}}</td>
                   </tr>
                 {{else}}
                   <tr>
-                    <td colspan="4" class="border px-4 py-2 text-center">No
+                    <td colspan='4' class='border px-4 py-2 text-center'>No
                       expenses recorded yet.</td>
                   </tr>
                 {{/each}}
@@ -51,18 +51,19 @@
           </div>
         </div>
 
-        <div class="bg-white shadow rounded p-6 lg:w-3/5">
-          <h3 class="text-xl font-semibold mb-4">Expense Summary</h3>
-          <div class="h-96 mb-4">
-            <canvas id="expenses-chart"></canvas>
+        <div class='max-w-4xl mx-auto px-4 py-8'>
+          <h3 class='text-xl font-semibold mb-4'>Expense Summary</h3>
+          <div class='bg-blue-50 shadow rounded p-6'>
+          <div class='h-96 mb-4'>
+            <canvas id='expenses-chart'></canvas>
           </div>
-          <p class="text-lg"><span class="font-semibold">Total Expenses:</span>
-            $<span id="total-expenses"></span></p>
+          <p class='text-lg'><span class='font-semibold'>Total Expenses:</span>
+            $<span id='total-expenses'></span></p>
         </div>
       </div>
     </div>
     <script
-      src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"
+      src='https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js'
     ></script>
   </body>
 </html>
