@@ -1,5 +1,10 @@
 const { Sequelize } = require('sequelize');
-const sequelize = new Sequelize('expensewise', 'postgres', 'legion', {
+require('dotenv').config();
+const db = process.env.DB_NAME;
+const dbUser = process.env.DB_USER;
+const dbPassword = process.env.DB_PASSWORD;
+
+const sequelize = new Sequelize(db, dbUser, dbPassword, {
   host: 'localhost',
   dialect: 'postgres',
 });

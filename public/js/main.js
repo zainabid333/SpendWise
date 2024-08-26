@@ -12,8 +12,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Set today's date as default for the date input
     const dateInput = document.getElementById('date');
-    const today = new Date().toISOString().split('T')[0];
-    dateInput.value = today;
+    const today = new Date();
+    const localDate = new Date(
+      today.getTime() - today.getTimezoneOffset() * 60 * 1000
+    )
+      .toISOString()
+      .split('T')[0];
+    dateInput.value = localDate;
 
     // Handle delete button click
     const deleteButtons = document.querySelectorAll('.delete-expense');

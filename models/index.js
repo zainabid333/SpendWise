@@ -1,6 +1,7 @@
 const User = require('./User');
 const Expense = require('./Expense');
 const Category = require('./Category');
+const Income = require('./Income');
 
 // Define associations here
 User.hasMany(Expense, {
@@ -23,5 +24,14 @@ Expense.belongsTo(Category, {
   as: 'category',
 });
 
+//Income Association
+User.hasMany(Income, {
+  foreignKey: 'userId',
+  as: 'incomes',
+});
+Income.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user',
+});
 // Export models and sequelize connection
-module.exports = { User, Expense, Category };
+module.exports = { User, Expense, Category, Income };

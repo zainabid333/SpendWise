@@ -68,50 +68,11 @@ router.get('/filter', isAuthenticated, async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
-// router.get('/filter', isAuthenticated, async (req, res) => {
-//   try {
-//     const { search, filterDate } = req.query;
-
-//     const whereConditions = {
-//       userId: req.session.userId, // Ensure you're only fetching the logged-in user's expenses
-//     };
-
-//     if (search) {
-//       whereConditions[Op.or] = [
-//         { description: { [Op.iLike]: `%${search}%` } },
-//         { category: { [Op.iLike]: `%${search}%` } },
-//       ];
-//     }
-
-//     if (filterDate) {
-//       whereConditions.date = filterDate;
-//     }
-
-//     const expenses = await Expense.findAll({
-//       where: whereConditions,
-//       include: [
-//         {
-//           model: User,
-//           as: 'user',
-//           model: Category,
-//           as: 'category',
-//           attributes: ['username'],
-//         },
-//       ],
-//     });
-
-//     res.render('expenses', { expenses });
-//   } catch (error) {
-//     console.error('Error filtering expenses:', error);
-//     res.status(500).send('Server Error');
-//   }
-// });
 
 // Add new expense
 router.post('/', isAuthenticated, async (req, res) => {
   try {
     const { amount, description, date, categoryId } = req.body;
-    console.log('Adding expense now with category as:', categoryId);
 
     // Validate categoryId
     if (!categoryId) {
@@ -123,13 +84,17 @@ router.post('/', isAuthenticated, async (req, res) => {
     if (!category) {
       throw new Error('Invalid category');
     }
+    const localDate = new Date(date);
+    const offsetDate = new Date(
+      localDate.getTime() + localDate.getTimezoneOffset() * 60000
+    );
 
     const newExpense = await Expense.create({
       amount,
       description,
-      date: new Date(date),
+      date: offsetDate,
       userId: req.session.userId,
-      categoryId: category.id, // Use the validated category id
+      categoryId: category.id,
     });
 
     res.redirect('/expenses');

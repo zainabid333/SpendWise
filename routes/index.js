@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { User, Expense, Category } = require('../models');
+const { User, Expense, Category, Income } = require('../models');
 const session = require('express-session');
 
 // Middleware to check if user is logged in
@@ -53,6 +53,7 @@ router.get('/graph', isAuthenticated, (req, res) => {
       res.status(500).render('error', { message: 'An error occurred' });
     });
 });
+
 // Dashboard
 router.get('/dashboard', (req, res) => {
   // console.log("Dashboard route hit. Session:", req.session);
@@ -69,12 +70,34 @@ router.get('/dashboard', (req, res) => {
         include: [{ model: Category, as: 'category' }],
         // limit: 5,
       },
+      {
+        model: Income,
+        as: 'incomes',
+        order: [['createdAt', 'DESC']],
+      },
     ],
     attributes: { exclude: ['password'] },
   })
     .then((user) => {
       if (user) {
-        res.render('dashboard', { user: user.toJSON(), title: 'Dashboard' });
+        const totalIncome = user.income.reduce(
+          (total, income) => total + parseFloat(income.amount),
+          0
+        );
+        const totalExpenses = user.expenses.reduce(
+          (total, expense) => total + parseFloat(expense.amount),
+          0
+        );
+
+        const budget = totalIncome - totalExpenses;
+
+        res.render('dashboard', {
+          user: user.toJSON(),
+          totalIncome: totalIncome.toFixed(2),
+          totalExpenses: totalExpenses.toFixed(2),
+          budget: budget.toFixed(2),
+          title: 'Dashboard',
+        });
       } else {
         console.log(
           'User not found. Destroying session and redirecting to login.'
