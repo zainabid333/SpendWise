@@ -6,7 +6,7 @@
     <link rel='stylesheet' href='/css/style.css' />
     <style>
       .expense-item:nth-child(even) { background-color: #f3f4f6; }
-      .expense-item:nth-child(odd) { background-color: #ffffff; }
+      .expense-item:nth-child(odd) { background-color: #df9b9b; }
     </style>
   </head>
   <body class='bg-gray-100'>
@@ -18,7 +18,7 @@
           {{user.username}}</p>
         <p><span class='font-semibold'>Email:</span> {{user.email}}</p>
       </div>
-
+  
       <div class='flex flex-col lg:flex-row gap-8'>
         <div class='bg-blue-50 shadow rounded p-6 lg:w-2/5'>
           <h3 class='text-xl font-semibold mb-4'>Recent Transactions</h3>
@@ -37,7 +37,7 @@
                   <tr class='expense-item'>
                     <td class='border px-4 py-2'>{{this.description}}</td>
                     <td class='border px-4 py-2'>${{this.amount}}</td>
-                    <td class='border px-4 py-2'>{{this.category}}</td>
+                    <td class='border px-4 py-2'>{{this.category.name}}</td>
                     <td class='border px-4 py-2'>{{formatDate this.date}}</td>
                   </tr>
                 {{else}}

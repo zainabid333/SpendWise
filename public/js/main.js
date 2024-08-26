@@ -10,28 +10,33 @@ document.addEventListener('DOMContentLoaded', function () {
       createExpensesChart();
     }
 
+    // Set today's date as default for the date input
     const dateInput = document.getElementById('date');
     const today = new Date().toISOString().split('T')[0];
     dateInput.value = today;
+
+    // Handle delete button click
     const deleteButtons = document.querySelectorAll('.delete-expense');
     deleteButtons.forEach((button) => {
       button.addEventListener('click', deleteExpense);
     });
+
+    // Modal logic
     const categorySelect = document.getElementById('category');
-    const modal = new bootstrap.Modal(
-      document.getElementById('newCategoryModal')
-    );
+    const modal = document.getElementById('newCategoryModal'); // Modal element
     const closeModalButton = document.getElementById('closeModalButton');
 
-    //Open Modal form
+    // Open modal when 'Add new Category' is selected
     categorySelect.addEventListener('change', function () {
       if (categorySelect.value === 'new') {
-        modal.classList.remove('hidden');
+        modal.classList.remove('hidden'); // Show the modal
       }
     });
+
+    // Close modal on 'Cancel' button click
     closeModalButton.addEventListener('click', function () {
-      modal.classList.add('hidden');
-      categorySelect.value = '';
+      modal.classList.add('hidden'); // Hide the modal
+      categorySelect.value = ''; // Reset the category selection
     });
   } catch (error) {
     console.error('Error initializing page:', error);

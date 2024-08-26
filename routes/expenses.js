@@ -14,12 +14,16 @@ const isAuthenticated = (req, res, next) => {
 // Get all expenses
 router.get('/', isAuthenticated, async (req, res) => {
   try {
-    const categories = await Category.findAll();
     const expenses = await Expense.findAll({
-      where: { userId: req.session.userId }, // Ensure userId matches your model field
-      include: [{ model: User, as: 'user', attributes: ['username'] }], // Correct alias usage
-      raw: false, // Remove raw: true to ensure eager-loading works properly
+      where: { userId: req.session.userId },
+      include: [
+        { model: User, as: 'user', attributes: ['username'] },
+        { model: Category, as: 'category' },
+      ],
+      raw: false,
     });
+
+    const categories = await Category.findAll();
     res.render('expenses', { expenses, categories });
   } catch (error) {
     console.error('Error fetching expenses:', error);
@@ -37,10 +41,8 @@ router.get('/filter', isAuthenticated, async (req, res) => {
     };
 
     if (search) {
-      whereConditions[Op.or] = [
-        { description: { [Op.iLike]: `%${search}%` } },
-        { category: { [Op.iLike]: `%${search}%` } },
-      ];
+      whereConditions[Op.or] = [{ description: { [Op.iLike]: `%${search}%` } }];
+      whereConditions[Op.or].push({ category: { [Op.iLike]: `%${search}%` } });
     }
 
     if (filterDate) {
@@ -49,31 +51,93 @@ router.get('/filter', isAuthenticated, async (req, res) => {
 
     const expenses = await Expense.findAll({
       where: whereConditions,
-      include: [{ model: User, as: 'user', attributes: ['username'] }],
+      include: [
+        {
+          model: User,
+          as: 'user',
+          model: Category,
+          as: 'category',
+          attributes: ['userId'],
+        },
+      ],
     });
 
-    res.render('expenses', { expenses });
+    res.render('expenses', { expenses, categories });
   } catch (error) {
-    console.error('Error filtering expenses:', error);
+    console.error('Error searching expenses:', error);
     res.status(500).send('Server Error');
   }
 });
+// router.get('/filter', isAuthenticated, async (req, res) => {
+//   try {
+//     const { search, filterDate } = req.query;
+
+//     const whereConditions = {
+//       userId: req.session.userId, // Ensure you're only fetching the logged-in user's expenses
+//     };
+
+//     if (search) {
+//       whereConditions[Op.or] = [
+//         { description: { [Op.iLike]: `%${search}%` } },
+//         { category: { [Op.iLike]: `%${search}%` } },
+//       ];
+//     }
+
+//     if (filterDate) {
+//       whereConditions.date = filterDate;
+//     }
+
+//     const expenses = await Expense.findAll({
+//       where: whereConditions,
+//       include: [
+//         {
+//           model: User,
+//           as: 'user',
+//           model: Category,
+//           as: 'category',
+//           attributes: ['username'],
+//         },
+//       ],
+//     });
+
+//     res.render('expenses', { expenses });
+//   } catch (error) {
+//     console.error('Error filtering expenses:', error);
+//     res.status(500).send('Server Error');
+//   }
+// });
 
 // Add new expense
 router.post('/', isAuthenticated, async (req, res) => {
   try {
-    const { amount, description, category } = req.body;
+    const { amount, description, date, categoryId } = req.body;
+    console.log('Adding expense now with category as:', categoryId);
+
+    // Validate categoryId
+    if (!categoryId) {
+      throw new Error('Category is required');
+    }
+
+    // Check if the category exists
+    const category = await Category.findByPk(categoryId);
+    if (!category) {
+      throw new Error('Invalid category');
+    }
+
     const newExpense = await Expense.create({
       amount,
       description,
-      category,
-      date: req.body.date(),
-      userId: req.session.userId, // Ensure 'userId' is consistent
+      date: new Date(date),
+      userId: req.session.userId,
+      categoryId: category.id, // Use the validated category id
     });
+
     res.redirect('/expenses');
   } catch (error) {
     console.error('Error adding expense:', error);
-    res.status(400).render('dashboard', { error: 'Failed to add expense.' });
+    res.status(400).render('dashboard', {
+      error: error.message || 'Failed to add expense.',
+    });
   }
 });
 

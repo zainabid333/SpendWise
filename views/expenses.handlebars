@@ -33,7 +33,7 @@
         <select
           type='text'
           id='category'
-          name='category'
+          name='categoryId'
           required
           class='w-full px-3 py-2 border rounded'
         >
@@ -64,7 +64,7 @@
   {{! //Modal form for adding category }}
   <div id='newCategoryModal' class='fixed z-10 inset-0 overflow-y-auto hidden'>
     <div class='flex items-center justify-center min-h-screen'>
-      <div class='bg-white shadow-lg rounded-lg p-6'>
+      <div class='bg-white shadow-lg rounded-lg p-6 max-w-sm mx-auto relative'>
         <h2 class='text-xl font-bold mb-4'>Add New Category</h2>
         <form id='newCategoryForm' action='/categories' method='POST'>
           <div class='mb-4'>
@@ -77,11 +77,11 @@
               class='w-full px-3 py-2 border rounded'
             />
           </div>
-          <div class='flex justify-end'>
+          <div class='flex justify-between'>
             <button
               type='button'
-              id='closeModalBtn'
-              class='mr-2 bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600'
+              id='closeModalButton'
+              class='bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600'
             >Cancel</button>
             <button
               type='submit'
@@ -144,7 +144,9 @@
             <tr>
               <td class='border px-4 py-2 text-center'>{{this.description}}</td>
               <td class='border px-4 py-2 text-center'>${{this.amount}}</td>
-              <td class='border px-4 py-2 text-center'>{{this.category}}</td>
+              <td
+                class='border px-4 py-2 text-center'
+              >{{this.category.name}}</td>
               <td class='border px-4 py-2 text-center'>{{formatDate
                   this.date
                 }}</td>

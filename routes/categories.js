@@ -15,3 +15,13 @@ router.post('/', async (req, res) => {
     res.status(500).json({ error: 'Failed to create category' });
   }
 });
+router.get('/', async (req, res) => {
+  try {
+    const categories = await Category.findAll();
+    res.render('categories', { categories });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to retrieve categories' });
+  }
+});
+module.exports = router;

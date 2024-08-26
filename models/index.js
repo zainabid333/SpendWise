@@ -2,9 +2,26 @@ const User = require('./User');
 const Expense = require('./Expense');
 const Category = require('./Category');
 
-// Call the associate method on both models
-User.associate({ Expense });
-Expense.associate({ User });
-Category.associate({ Expense });
+// Define associations here
+User.hasMany(Expense, {
+  foreignKey: 'userId',
+  as: 'expenses',
+});
 
-module.exports = { User, Expense };
+Expense.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user',
+});
+
+Category.hasMany(Expense, {
+  foreignKey: 'categoryId',
+  as: 'expenses',
+});
+
+Expense.belongsTo(Category, {
+  foreignKey: 'categoryId',
+  as: 'category',
+});
+
+// Export models and sequelize connection
+module.exports = { User, Expense, Category };
