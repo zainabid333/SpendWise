@@ -1,78 +1,85 @@
-
-    <div class='max-w-7xl mx-auto px-4 py-8'>
-      <h2 class='text-2xl font-bold mb-6'>Welcome, {{user.username}}!</h2>
-      <div class='bg-white shadow rounded p-6 mb-8'>
-        <h3 class='text-xl font-semibold mb-4'>Your Profile</h3>
-        <p class='mb-2'><span class='font-semibold'>Username:</span>
-          {{user.username}}</p>
-        <p><span class='font-semibold'>Email:</span> {{user.email}}</p>
-      </div>
-
-      <div class='flex flex-col lg:flex-row gap-8'>
-        <div class='bg-blue-50 shadow rounded p-6 lg:w-2/5'>
-          <h3 class='text-xl font-semibold mb-4'>Recent Transactions</h3>
-          <div class='overflow-x-auto'>
-            <table class='w-full table-auto'>
-              <thead>
-                <tr class='bg-blue-100'>
-                  <th class='px-4 py-2 text-left'>Description</th>
-                  <th class='px-4 py-2 text-left'>Amount</th>
-                  <th class='px-4 py-2 text-left'>Category</th>
-                  <th class='px-4 py-2 text-left'>Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {{#each user.expenses}}
-                  <tr class='expense-item'>
-                    <td class='border px-4 py-2'>{{this.description}}</td>
-                    <td class='border px-4 py-2'>${{this.amount}}</td>
-                    <td class='border px-4 py-2'>{{this.category.name}}</td>
-                    <td class='border px-4 py-2'>{{formatDate this.date}}</td>
-                  </tr>
-                {{else}}
-                  <tr>
-                    <td colspan='4' class='border px-4 py-2 text-center'>No
-                      expenses recorded yet.</td>
-                  </tr>
-                {{/each}}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class='max-w-4xl mx-auto px-4 py-8'>
-          <h3 class='text-xl font-semibold mb-4'>Expense Summary</h3>
-          <div class='bg-blue-50 shadow rounded p-6'>
-          <div class='h-96 mb-4'>
-            <canvas id='expenses-chart'></canvas>
-          </div>
-          <p class='text-lg'><span class='font-semibold'>Total Expenses:</span>
-            $<span id='total-expenses'></span></p>
-        </div>
-      </div>
-    </div>
-    <script
-      src='https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js'
-    ></script>
-      <div class='bg-white shadow rounded p-6 mb-4'>
-        <h4 class='text-lg font-semibold mb-2'>Total Income</h4>
-        <p class='text-lg'>$<span>{{totalIncome}}</span></p>
-      </div>
-      <div class='bg-white shadow rounded p-6 mb-4'>
-        <h4 class='text-lg font-semibold mb-2'>Total Expenses</h4>
-        <p class='text-lg'>$<span>{{totalExpenses}}</span></p>
-      </div>
-      <div class='bg-white shadow rounded p-6'>
-        <h4 class='text-lg font-semibold mb-2'>Budget</h4>
-        <p class='text-lg'>$<span>{{budget}}</span></p>
-      </div>
+<div class='flex flex-col lg:flex-row gap-8'>
+  <div class='bg-white shadow rounded p-6 lg:w-2/5'>
+    <h3 class='text-xl font-semibold mb-4'>Recent Transactions</h3>
+    <div class='overflow-x-auto'>
+      <table class='min-w-full leading-normal'>
+        <thead>
+          <tr class='bg-blue-100'>
+            <th
+              class='px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'
+            >Description</th>
+            <th
+              class='px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'
+            >Amount</th>
+            <th
+              class='px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'
+            >Category</th>
+            <th
+              class='px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider'
+            >Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each user.expenses}}
+            <tr class='expense-item'>
+              <td
+                class='px-5 py-5 border-b border-gray-200 bg-white text-sm'
+              >{{this.description}}</td>
+              <td
+                class='px-5 py-5 border-b border-gray-200 bg-white text-sm'
+              >${{this.amount}}</td>
+              <td
+                class='px-5 py-5 border-b border-gray-200 bg-white text-sm'
+              >{{this.category.name}}</td>
+              <td
+                class='px-5 py-5 border-b border-gray-200 bg-white text-sm'
+              >{{formatDate this.date}}</td>
+            </tr>
+          {{else}}
+            <tr>
+              <td
+                colspan='4'
+                class='px-5 py-5 border-b border-gray-200 bg-white text-center text-sm'
+              >No expenses recorded yet.</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
     </div>
   </div>
 
-  <div class='max-w-4xl mx-auto px-4 py-8'>
+  {{! Graph for dashboard }}
+  <div class='bg-white text-center shadow rounded p-6 lg:w-3/5' '>
     <h3 class='text-xl font-semibold mb-4'>Expense Summary</h3>
-    <div class='h-96 mb-4'>
-      <canvas id='expenses-chart'></canvas>
+    <div class='bg-blue-50 shadow rounded p-6'>
+      <div class='h-96 mb-4'>
+        <canvas id='expenses-chart'></canvas>
+      </div>
+      <p class='text-lg'><span class='font-semibold'>Total Expenses:</span>
+        $<span id='total-expenses'></span></p>
     </div>
   </div>
+
+  <div class='bg-white text-center shadow rounded p-6 lg:w-3/5'>
+    <h3 class='text-xl font-semibold mb-4'>Budget Overview</h3>
+    <div class='flex items-center justify-between mb-4'>
+      <div>
+        <p class='text-lg font-semibold'>Total Income</p>
+        <p class='text-lg'>$<span id='total-income'>{{totalIncome}}</span></p>
+      </div>
+      <div>
+        <p class='text-lg font-semibold'>Total Expenses</p>
+        <p class='text-lg'>$<span id='total-expenses'>{{totalExpenses}}</span></p>
+        </div>
+        <div>
+          <p class='text-lg font-semibold'>Budget</p>
+          <p class='text-lg'>$<span id='budget'>{{budget}}</span></p>
+          </div>
+          </div>
+          </div>
+          </div></div>
+          
 </div>
+<script
+  src='https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js'
+></script>

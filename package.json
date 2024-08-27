@@ -5,7 +5,11 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "build:css": "tailwindcss build public/css/tailwind.css -o public/css/style.css"
+    "build:css": "tailwindcss build public/css/tailwind.css -o public/css/style.css",
+    "watch:css": "postcss public/css/tailwind.css -o public/css/style.css",
+    "start:dev": "npm run watch:css && npm run dev"
+
+
   },
   "keywords": [],
   "author": "",
@@ -18,6 +22,7 @@
     "express": "^4.19.2",
     "express-handlebars": "^8.0.1",
     "express-session": "^1.18.0",
+    "flowbite": "^2.5.1",
     "pg": "^8.12.0",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.3"
