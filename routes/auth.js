@@ -2,27 +2,28 @@ const express = require("express");
 const router = express.Router();
 const { User } = require("../models");
 
-//SignUp route
+const bcrypt = require("bcrypt");
+
+// Sign up route
 router.post("/signup", async (req, res) => {
   try {
     const { username, email, password } = req.body;
-    const user = await User.create({ username, email, password });
-    req.session.userId = user.id; // Store the user ID in session
+    const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
+    const user = await User.create({ username, email, password: hashedPassword });
+    req.session.userId = user.id;
     res.redirect("/login");
   } catch (error) {
     console.error("Signup error:", error);
-    res
-      .status(400)
-      .render("signup", { error: "Signup failed. Please try again." });
+    res.status(400).render("signup", { error: "Signup failed. Please try again." });
   }
 });
 
-//Login Route
+// Login route
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ where: { email } });
-    if (user && (await user.validPassword(password))) {
+    if (user && await bcrypt.compare(password, user.password)) { // Compare hashed passwords
       req.session.userId = user.id;
       req.session.save((err) => {
         if (err) {
@@ -35,9 +36,7 @@ router.post("/login", async (req, res) => {
     }
   } catch (error) {
     console.error("Login error:", error);
-    res
-      .status(500)
-      .render("login", { error: "Login failed. Please try again." });
+    res.status(500).render("login", { error: "Login failed. Please try again." });
   }
 });
 
