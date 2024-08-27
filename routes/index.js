@@ -86,7 +86,7 @@ router.get('/dashboard', (req, res) => {
             type: 'Income',
             category: { name: 'Income' }, // Add a category for consistency
           })),
-        ].sort((a, b) => new Date(b.date) - new Date(a.date));
+        ].sort((a, b) => new Date(b.createdAt) - new Date(a.date));
 
         const totalIncome = user.incomes.reduce(
           (total, income) => total + parseFloat(income.amount),

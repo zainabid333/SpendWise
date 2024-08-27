@@ -35,14 +35,20 @@ router.get('/', isAuthenticated, async (req, res) => {
 // Create income
 router.post('/', isAuthenticated, async (req, res) => {
   try {
+    const { amount, description, date } = req.body;
+    const localDate = new Date(date);
+    const offsetDate = new Date(
+      localDate.getTime() + localDate.getTimezoneOffset() * 60000
+    );
     const newIncome = await Income.create({
       userId: req.session.userId,
-      amount: req.body.amount,
-      description: req.body.description,
-      date: req.body.date || new Date(),
+      amount,
+      description,
+      date: offsetDate,
     });
+    console.log('New income created:', newIncome.toJSON());
 
-    res.redirect('/income');
+    res.redirect('/dashboard');
   } catch (err) {
     console.error('Error creating income:', err);
     res.status(400).render('income', { error: 'Failed to add income.' });
