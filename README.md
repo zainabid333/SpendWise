@@ -51,19 +51,20 @@ An expense tracker application is a tool designed to help users manage their per
 
 ## Mockup
 
-![alt text](SpendWise1.png)
-![alt text](SpendWise2.png)
+![public/images/landingpage.png](public/images/landingpage.png)
+![public/images/carousel1.png ](public/images/carousel1.png)
 
 ## Deployment
 
-**Render Deployment:**
+- Render Deployment:
 
 ## Collaborators
-1. Zain Abid- https://github.com/zainabid333 
-2. Elisse Gomez- https://github.com/elissegomez24 
-3. Brandon Willis- https://github.com/brandon6ix 
-4. Melyana Lie- https://github.com/melyanalie 
+
+1. Zain Abid- https://github.com/zainabid333
+2. Elisse Gomez- https://github.com/elissegomez24
+3. Brandon Willis- https://github.com/brandon6ix
+4. Melyana Lie- https://github.com/melyanalie
 
 ## License
 
-**MIT License** 
+[MIT License ](LICENSE)
