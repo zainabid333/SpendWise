@@ -7,6 +7,9 @@ const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const sequelize = require('./config/connection');
 const { User, Expense } = require('./models');
+const RedisStore = require('connect-redis')(session);
+const redis = require('redis');
+const redisClient = redis.createClient();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -16,8 +19,8 @@ const hbs = exphbs.create({
   helpers: hbshelpers,
   runtimeOptions: {
     allowProtoPropertiesByDefault: true, // Allow access to prototype properties
-    allowProtoMethodsByDefault: true, // Allow access to prototype methods (if needed)
-  },
+    allowProtoMethodsByDefault: true // Allow access to prototype methods (if needed)
+  }
 });
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
@@ -30,16 +33,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 //setup session
 app.use(
   session({
+    store: new RedisStore({ client: redisClient }),
     secret: 'your_secret_key',
-    store: new SequelizeStore({
-      db: sequelize,
-    }),
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    },
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 24 * 60 * 60 * 1000
+    }
   })
 );
 app.use((req, res, next) => {
