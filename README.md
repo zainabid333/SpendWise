@@ -28,8 +28,7 @@ An expense tracker application is a tool designed to help users manage their per
 - View all expenses/revenues
 - View total amount of expenses/revenues/balance
 - Add an expense and a revenue
-- Edit their expense, revenue, budget, and name
-- Delete an expense and a revenue
+- Delete an expense 
 
 ## Installation
 
