@@ -8,8 +8,6 @@
     "build:css": "tailwindcss build public/css/tailwind.css -o public/css/style.css",
     "watch:css": "postcss public/css/tailwind.css -o public/css/style.css",
     "start:dev": "npm run watch:css && npm run dev"
-
-
   },
   "keywords": [],
   "author": "",

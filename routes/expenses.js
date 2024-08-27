@@ -41,18 +41,17 @@ router.get('/filter', isAuthenticated, async (req, res) => {
     const { search, filterDate } = req.query;
 
     const whereConditions = {
-      userId: req.session.userId, // Ensure you're only fetching the logged-in user's expenses
+      userId: req.session.userId, 
     };
 
     if (search) {
       whereConditions[Op.or] = [{ description: { [Op.iLike]: `%${search}%` } }];
-      //hereConditions[Op.or].push({ category: { [Op.iLike]: `%${search}%` } });
     }
 
     if (filterDate) {
       whereConditions.date = filterDate;
     }
-    //fix this based on the models category and user
+
 
     const expenses = await Expense.findAll({
       where: whereConditions,

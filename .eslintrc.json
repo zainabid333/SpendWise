@@ -1,3 +1,29 @@
 {
-    "extends": ["prettier"]
+  "extends": ["prettier"],
+  "plugins": ["prettier"],
+  "rules": {
+    "prettier/prettier": "error",
+    "no-unused-vars": "warn",
+    "no-console": "warn",
+    "no-debugger": "warn",
+    "no-alert": "warn",
+    "no-undef": "warn",
+    "no-const-assign": "warn",
+    "no-dupe-args": "warn",
+    "no-dupe-keys": "warn",
+    "no-duplicate-case": "warn",
+    "no-empty": "warn",
+    "no-extra-boolean-cast": "warn",
+    "no-extra-semi": "warn",
+    "no-func-assign": "warn",
+    "no-inner-declarations": "warn",
+    "no-invalid-regexp": "warn",
+    "no-irregular-whitespace": "warn",
+    "no-obj-calls": "warn",
+    "no-sparse-arrays": "warn",
+    "no-unreachable": "warn",
+    "use-isnan": "warn",
+    "valid-typeof": "warn",
+    "no-unexpected-multiline": "warn"
+  }
 }

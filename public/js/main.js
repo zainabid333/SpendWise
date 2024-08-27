@@ -94,8 +94,8 @@ function calculateTotalExpenses() {
   let totalExpenses = 0;
 
   expenseRows.forEach((row) => {
-    const typeCell = row.querySelector('td:nth-child(4)'); // Assuming the 'type' is in the 4th column
-    const amountCell = row.querySelector('td:nth-child(2)'); // Assuming the 'amount' is in the 2nd column
+    const typeCell = row.querySelector('td:nth-child(4)'); 
+    const amountCell = row.querySelector('td:nth-child(2)'); 
 
     if (typeCell && typeCell.textContent.trim() === 'Expense' && amountCell) {
       const amount = parseFloat(amountCell.textContent.replace('$', ''));

@@ -84,7 +84,7 @@ router.get('/dashboard', (req, res) => {
           ...user.incomes.map((income) => ({
             ...income.toJSON(),
             type: 'Income',
-            category: { name: 'Income' }, // Add a category for consistency
+            category: { name: 'Income' }, 
           })),
         ].sort((a, b) => new Date(b.createdAt) - new Date(a.date));
 

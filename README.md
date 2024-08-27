@@ -36,13 +36,20 @@ An expense tracker application is a tool designed to help users manage their per
 1. **Clone the repository locally**
 2. **Install project dependencies**
 3. **Add .env file**
+4. **Run npm i**
 
-**NPM packages to install**
+## Node Modules used
 
-- sequelize
+- bcrypt
+- connect-session-sequelize
+- dotenv
 - express
 - express-handlebars
-- bcrypt
+- express-session
+- flowbite
+- pg
+- pg-hstore
+- sequelize
 
 ## Usage
 
