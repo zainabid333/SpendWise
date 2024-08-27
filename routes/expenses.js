@@ -62,7 +62,7 @@ router.get('/filter', isAuthenticated, async (req, res) => {
       ],
     });
 
-    res.render('expenses', { expenses, categories });
+    res.render('expenses', { expenses, Category });
   } catch (error) {
     console.error('Error searching expenses:', error);
     res.status(500).send('Server Error');
