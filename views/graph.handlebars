@@ -1,0 +1,30 @@
+<div class='max-w-4xl mx-auto px-4 py-8'>
+  <h2 class='text-2xl font-bold mb-6'>Expense Graph for {{user.username}}</h2>
+  <div class='bg-blue-50 shadow rounded p-6'>
+    <div class='h-96 mb-4'>
+      <canvas id='expenses-chart'></canvas>
+    </div>
+    <p class='text-lg'><span class='font-semibold'>Total Expenses:</span>
+      $<span id='total-expenses'></span></p>
+  </div>
+
+  <!-- Hidden table for data -->
+  <table class='hidden'>
+    <tbody>
+      {{#each user.expenses}}
+        <tr class='expense-item'>
+          <td class='border px-4 py-2'>{{this.description}}</td>
+          <td class='border px-4 py-2'>${{this.amount}}</td>
+          <td class='border px-4 py-2'>{{this.category.name}}</td>
+          <td class='border px-4 py-2'>{{formatDate this.date}}</td>
+        </tr>
+      {{else}}
+        <tr>
+          <td colspan='4' class='border px-4 py-2 text-center'>No expenses
+            recorded yet.</td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+<script src='https://cdn.jsdelivr.net/npm/chart.js'></script>

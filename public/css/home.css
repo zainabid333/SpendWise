@@ -1,0 +1,21 @@
+.bg-cover {
+  background-size: cover;
+}
+
+/* home.css */
+
+/* Optional: Custom styles for the homepage */
+.centered-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+@media (max-width: 768px) {
+    .centered-content {
+        padding: 10px;
+    }
+}
+
