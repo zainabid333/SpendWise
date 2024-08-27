@@ -40,28 +40,33 @@ router.get('/filter', isAuthenticated, async (req, res) => {
       userId: req.session.userId, // Ensure you're only fetching the logged-in user's expenses
     };
 
-    if (search) {
+    if (search) { 
       whereConditions[Op.or] = [{ description: { [Op.iLike]: `%${search}%` } }];
-      whereConditions[Op.or].push({ category: { [Op.iLike]: `%${search}%` } });
+      //hereConditions[Op.or].push({ category: { [Op.iLike]: `%${search}%` } });
     }
 
     if (filterDate) {
       whereConditions.date = filterDate;
     }
     //fix this based on the models category and user
+
     const expenses = await Expense.findAll({
       where: whereConditions,
       include: [
         {
           model: User,
           as: 'user',
+          attributes: ['userId'],
+        },
+        {
           model: Category,
           as: 'category',
-          attributes: ['userId'],
+          attributes: ['category_id'],
         },
       ],
     });
-    res.render('expenses', { expenses, Category });
+    console.log(expenses);
+    res.render('expenses', { expenses });
   } catch (error) {
     console.error('Error searching expenses:', error);
     res.status(500).send('Server Error');
