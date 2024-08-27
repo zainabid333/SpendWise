@@ -48,7 +48,7 @@ router.get('/filter', isAuthenticated, async (req, res) => {
     if (filterDate) {
       whereConditions.date = filterDate;
     }
-
+    //fix this based on the models category and user
     const expenses = await Expense.findAll({
       where: whereConditions,
       include: [
@@ -61,7 +61,6 @@ router.get('/filter', isAuthenticated, async (req, res) => {
         },
       ],
     });
-
     res.render('expenses', { expenses, Category });
   } catch (error) {
     console.error('Error searching expenses:', error);
