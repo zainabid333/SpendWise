@@ -40,7 +40,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(
   session({
     store: new RedisStore({ client: redisClient }),
-    secret: 'your_secret_key',
+    secret: 'byJustForMe',
     resave: false,
     saveUninitialized: false,
     cookie: {
