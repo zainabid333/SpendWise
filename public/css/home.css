@@ -1,19 +1,19 @@
 html,
 body {
-    height: 100%;
-    margin: 0;
+  height: 100%;
+  margin: 0;
 }
 
 .centered-content {
-    display: flex;
-    flex-direction: column;
-    /* Arrange items in a column */
-    justify-content: center;
-    /* Vertically center the content */
-    align-items: center;
-    /* Horizontally center the content */
-    height: 75vh;
-    /* Full viewport height */
-    background-color: #F3F4F6;
-    /* Optional: a light background color */
+  display: flex;
+  flex-direction: column;
+  /* Arrange items in a column */
+  justify-content: center;
+  /* Vertically center the content */
+  align-items: center;
+  /* Horizontally center the content */
+  height: 75vh;
+  /* Full viewport height */
+  background-color: #ebf8ff;
+  /* Optional: a light background color */
 }
