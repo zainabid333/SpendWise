@@ -10,10 +10,14 @@ const isAuthenticated = (req, res, next) => {
   }
   res.redirect('/login');
 };
+// Render expenses page
 
 // Get all expenses
 router.get('/', isAuthenticated, async (req, res) => {
   try {
+    const user = await User.findByPk(req.session.userId, {
+      attributes: ['username'],
+    });
     const expenses = await Expense.findAll({
       where: { userId: req.session.userId },
       include: [
@@ -24,7 +28,7 @@ router.get('/', isAuthenticated, async (req, res) => {
     });
 
     const categories = await Category.findAll();
-    res.render('expenses', { expenses, categories });
+    res.render('expenses', { expenses, categories, user });
   } catch (error) {
     console.error('Error fetching expenses:', error);
     res.status(500).render('error', { message: 'Failed to fetch expenses.' });
@@ -40,7 +44,7 @@ router.get('/filter', isAuthenticated, async (req, res) => {
       userId: req.session.userId, // Ensure you're only fetching the logged-in user's expenses
     };
 
-    if (search) { 
+    if (search) {
       whereConditions[Op.or] = [{ description: { [Op.iLike]: `%${search}%` } }];
       //hereConditions[Op.or].push({ category: { [Op.iLike]: `%${search}%` } });
     }
@@ -56,12 +60,12 @@ router.get('/filter', isAuthenticated, async (req, res) => {
         {
           model: User,
           as: 'user',
-          attributes: ['userId'],
+          attributes: ['id'],
         },
         {
           model: Category,
           as: 'category',
-          attributes: ['category_id'],
+          attributes: ['name'],
         },
       ],
     });

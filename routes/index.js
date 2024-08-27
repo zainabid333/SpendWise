@@ -54,8 +54,8 @@ router.get('/graph', isAuthenticated, (req, res) => {
 });
 
 // Dashboard
+
 router.get('/dashboard', (req, res) => {
-  // console.log("Dashboard route hit. Session:", req.session);
   if (!req.session.userId) {
     console.log('No user ID in session. Redirecting to login.');
     return res.redirect('/login');
@@ -65,20 +65,29 @@ router.get('/dashboard', (req, res) => {
       {
         model: Expense,
         as: 'expenses',
-        order: [['createdAt', 'DESC']],
         include: [{ model: Category, as: 'category' }],
-        // limit: 5,
       },
       {
         model: Income,
         as: 'incomes',
-        order: [['createdAt', 'DESC']],
       },
     ],
     attributes: { exclude: ['password'] },
   })
     .then((user) => {
       if (user) {
+        const transactions = [
+          ...user.expenses.map((expense) => ({
+            ...expense.toJSON(),
+            type: 'Expense',
+          })),
+          ...user.incomes.map((income) => ({
+            ...income.toJSON(),
+            type: 'Income',
+            category: { name: 'Income' }, // Add a category for consistency
+          })),
+        ].sort((a, b) => new Date(b.createdAt) - new Date(a.date));
+
         const totalIncome = user.incomes.reduce(
           (total, income) => total + parseFloat(income.amount),
           0
@@ -91,7 +100,10 @@ router.get('/dashboard', (req, res) => {
         const budget = totalIncome - totalExpenses;
 
         res.render('dashboard', {
-          user: user.toJSON(),
+          user: {
+            ...user.toJSON(),
+            transactions,
+          },
           totalIncome: totalIncome.toFixed(2),
           totalExpenses: totalExpenses.toFixed(2),
           budget: budget.toFixed(2),
@@ -110,4 +122,5 @@ router.get('/dashboard', (req, res) => {
       res.status(500).render('error', { message: 'An error occurred' });
     });
 });
+
 module.exports = router;
