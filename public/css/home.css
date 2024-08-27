@@ -1,19 +1,21 @@
-html,
-body {
-  height: 100%;
-  margin: 0;
+.bg-cover {
+  background-size: cover;
 }
 
+/* home.css */
+
+/* Optional: Custom styles for the homepage */
 .centered-content {
-  display: flex;
-  flex-direction: column;
-  /* Arrange items in a column */
-  justify-content: center;
-  /* Vertically center the content */
-  align-items: center;
-  /* Horizontally center the content */
-  height: 75vh;
-  /* Full viewport height */
-  background-color: #ebf8ff;
-  /* Optional: a light background color */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
 }
+
+@media (max-width: 768px) {
+    .centered-content {
+        padding: 10px;
+    }
+}
+
