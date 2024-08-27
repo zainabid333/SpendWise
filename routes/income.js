@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
       description: req.body.description,
       date: req.body.date || new Date(),
     });
-    res.status(201).json(income);
+    res.render('income', { income });
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
