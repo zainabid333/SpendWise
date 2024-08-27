@@ -5,9 +5,14 @@ document.addEventListener('DOMContentLoaded', function () {
       calculateTotalExpenses();
     }
 
-    const chartElement = document.getElementById('expenses-chart');
-    if (chartElement) {
+    const expensesChartElement = document.getElementById('expenses-chart');
+    if (expensesChartElement) {
       createExpensesChart();
+    }
+
+    const budgetChartElement = document.getElementById('budget-chart');
+    if (budgetChartElement) {
+      createBudgetChart();
     }
 
     // Set today's date as default for the date input
@@ -89,8 +94,10 @@ function calculateTotalExpenses() {
   let totalExpenses = 0;
 
   expenseRows.forEach((row) => {
-    const amountCell = row.querySelector('td:nth-child(2)');
-    if (amountCell) {
+    const typeCell = row.querySelector('td:nth-child(4)'); // Assuming the 'type' is in the 4th column
+    const amountCell = row.querySelector('td:nth-child(2)'); // Assuming the 'amount' is in the 2nd column
+
+    if (typeCell && typeCell.textContent.trim() === 'Expense' && amountCell) {
       const amount = parseFloat(amountCell.textContent.replace('$', ''));
       if (!isNaN(amount)) totalExpenses += amount;
     }
@@ -99,18 +106,62 @@ function calculateTotalExpenses() {
   document.getElementById('total-expenses').textContent =
     totalExpenses.toFixed(2);
 }
+function createBudgetChart() {
+  const totalExpenses = parseFloat(
+    document.getElementById('total-expenses').textContent
+  );
+  const budget = parseFloat(document.getElementById('budget').textContent);
+
+  const ctx = document.getElementById('budget-chart').getContext('2d');
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Expenses', 'Remaining Budget'],
+      datasets: [
+        {
+          label: 'Budget Overview',
+          data: [totalExpenses, Math.max(0, budget - totalExpenses)],
+          backgroundColor: ['#FF6384', '#36A2EB'],
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+        tooltip: {
+          callbacks: {
+            label: function (tooltipItem) {
+              return (
+                tooltipItem.label +
+                ': $' +
+                tooltipItem.raw
+                  .toFixed(2)
+                  .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+              );
+            },
+          },
+        },
+      },
+    },
+  });
+}
 
 function createExpensesChart() {
-  const expenseRows = document.querySelectorAll('tbody tr');
+  const expenseRows = document.querySelectorAll('.transaction-item'); // Selecting all transactions
   const categories = {};
 
   expenseRows.forEach((row) => {
-    const categoryCell = row.querySelector('td:nth-child(3)');
-    const amountCell = row.querySelector('td:nth-child(2)');
+    const categoryCell = row.querySelector('td:nth-child(3)'); // Category in 3rd column
+    const amountCell = row.querySelector('td:nth-child(2)'); // Amount in 2nd column
+    const typeCell = row.querySelector('td:nth-child(4)'); // Type in 4th column
 
-    if (categoryCell && amountCell) {
-      const category = categoryCell.textContent;
-      const amount = parseFloat(amountCell.textContent.replace('$', ''));
+    if (typeCell && typeCell.textContent.trim() === 'Expense') {
+      const category = categoryCell.textContent.trim();
+      const amount = parseFloat(amountCell.textContent.replace('$', '').trim());
+
       if (!isNaN(amount)) {
         categories[category] = (categories[category] || 0) + amount;
       }
