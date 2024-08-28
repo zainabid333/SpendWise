@@ -16,8 +16,8 @@ const hbs = exphbs.create({
   helpers: hbshelpers,
   runtimeOptions: {
     allowProtoPropertiesByDefault: true, // Allow access to prototype properties
-    allowProtoMethodsByDefault: true, // Allow access to prototype methods (if needed)
-  },
+    allowProtoMethodsByDefault: true // Allow access to prototype methods (if needed)
+  }
 });
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
@@ -30,16 +30,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 //setup session
 app.use(
   session({
-    secret: 'your_secret_key',
+    secret: 'One Little Catelina',
     store: new SequelizeStore({
-      db: sequelize,
+      db: sequelize
     }),
     resave: false,
     saveUninitialized: false,
     cookie: {
       secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    },
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
   })
 );
 app.use((req, res, next) => {
