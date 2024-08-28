@@ -1,5 +1,4 @@
 require('dotenv').config();
-
 const { Sequelize } = require('sequelize');
 
 // Create a new connection to the database
@@ -17,3 +16,4 @@ if (process.env.DB_URL) {
     }
   );
 }
+

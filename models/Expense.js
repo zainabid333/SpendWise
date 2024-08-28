@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize');
+const { Sequelize,DataTypes } = require('sequelize');
 const sequelize = require('../config/connection');
 
 const Expense = sequelize.define('Expense', {
