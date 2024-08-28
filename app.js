@@ -3,7 +3,7 @@ const exphbs = require('express-handlebars');
 const hbshelpers = require('./helpers/handlebars');
 const path = require('path');
 const session = require('express-session'); // Keep this one
-const SequelizeStore = require('connect-session-sequelize')(session.Store);
+// const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const sequelize = require('./config/connection');
 const { User, Expense } = require('./models');
 const RedisStore = require('connect-redis').default; // Updated syntax
@@ -40,16 +40,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(
   session({
     store: new RedisStore({ client: redisClient }),
-    secret: 'byJustForMe',
+    secret: 'One Little Catelina',
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+      secure: process.env.NODE_ENV === 'production', // Adjust for local or production
       maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
   })
 );
 app.use((req, res, next) => {
+  console.log('Session data:', req.session);
   res.locals.user =
     req.session && req.session.userId ? { id: req.session.userId } : null;
   next();
