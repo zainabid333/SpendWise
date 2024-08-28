@@ -1,54 +1,70 @@
-const express = require("express");
+const express = require('express');
+const bcrypt = require('bcrypt');
 const router = express.Router();
-const { User } = require("../models");
+const { User } = require('../models');
 
-//SignUp route
-router.post("/signup", async (req, res) => {
+// SignUp route
+router.post('/signup', async (req, res) => {
   try {
     const { username, email, password } = req.body;
-    const user = await User.create({ username, email, password });
+    const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
+    const user = await User.create({
+      username,
+      email,
+      password: hashedPassword
+    });
     req.session.userId = user.id; // Store the user ID in session
-    res.redirect("/login");
+    req.session.save(err => {
+      if (err) {
+        console.error('Session save error:', err);
+      }
+      res.redirect('/dashboard'); // Redirect to dashboard after signup
+    });
   } catch (error) {
-    console.error("Signup error:", error);
+    console.error('Signup error:', error);
     res
       .status(400)
-      .render("signup", { error: "Signup failed. Please try again." });
+      .render('signup', { error: 'Signup failed. Please try again.' });
   }
 });
 
-//Login Route
-router.post("/login", async (req, res) => {
+// Login route
+router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ where: { email } });
-    if (user && (await user.validPassword(password))) {
-      req.session.userId = user.id;
-      req.session.save((err) => {
+
+    if (user && (await bcrypt.compare(password, user.password))) {
+      req.session.userId = 1;
+      console.log('Session userId before save:', req.session.userId);
+
+      req.session.save(err => {
         if (err) {
-          console.error("Session save error:", err);
+          console.error('Session save error:', err);
+          return res.status(500).send('Failed to save session.');
         }
-        res.redirect("/dashboard");
+        console.log('Session saved successfully:', req.session);
+        res.redirect('/dashboard');
       });
     } else {
-      res.status(400).render("login", { error: "Invalid password or email." });
+      res.status(400).render('login', { error: 'Invalid password or email.' });
     }
   } catch (error) {
-    console.error("Login error:", error);
+    console.error('Login error:', error);
     res
       .status(500)
-      .render("login", { error: "Login failed. Please try again." });
+      .render('login', { error: 'Login failed. Please try again.' });
   }
 });
 
-//Logout Route
-router.get("/logout", (req, res) => {
-  req.session.destroy((err) => {
+// Logout route
+router.get('/logout', (req, res) => {
+  req.session.destroy(err => {
     if (err) {
-      return res.redirect("/dashboard");
+      return res.redirect('/dashboard');
     }
-    res.clearCookie("connect.sid");
-    res.redirect("/login");
+    res.clearCookie('connect.sid');
+    res.redirect('/login');
   });
 });
 
