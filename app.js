@@ -5,7 +5,7 @@ const path = require('path');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const sequelize = require('./config/connection');
-const { User, Expense } = require('./models');
+const { User } = require('./models');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -29,7 +29,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Setup session
 app.use(
   session({
-    secret: 'One Little Catelina',
+    secret: process.env.SESSION_SECRET || 'One Little Catelina',
     store: new SequelizeStore({
       db: sequelize
     }),
@@ -42,9 +42,19 @@ app.use(
   })
 );
 
-app.use((req, res, next) => {
-  res.locals.user =
-    req.session && req.session.userId ? { id: req.session.userId } : null;
+// Fetch user and store in res.locals
+app.use(async (req, res, next) => {
+  if (req.session && req.session.userId) {
+    try {
+      const user = await User.findByPk(req.session.userId);
+      res.locals.user = user ? user.get({ plain: true }) : null;
+    } catch (err) {
+      console.error('Error fetching user:', err);
+      res.locals.user = null;
+    }
+  } else {
+    res.locals.user = null;
+  }
   next();
 });
 
@@ -54,6 +64,12 @@ app.use('/auth', require('./routes/auth'));
 app.use('/expenses', require('./routes/expenses'));
 app.use('/income', require('./routes/income'));
 app.use('/categories', require('./routes/categories'));
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something went wrong!');
+});
 
 sequelize.sync({ force: false }).then(() => {
   app.listen(PORT, () => console.log(`Now listening on port ${PORT}`));
