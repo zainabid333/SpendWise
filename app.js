@@ -21,8 +21,9 @@ const PORT = process.env.PORT || 3001;
 const hbs = exphbs.create({
   helpers: hbshelpers,
   runtimeOptions: {
-    allowProtoPropertiesByDefault: true,
-    allowProtoMethodsByDefault: true
+    allowProtoPropertiesByDefault: true, // Allow access to prototype properties
+    allowProtoMethodsByDefault: true // Allow access to prototype methods (if needed)
+
   }
 });
 app.engine('handlebars', hbs.engine);
@@ -36,6 +37,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Setup session
 app.use(
   session({
+
     store: new RedisStore({ client: redisClient }),
     secret: 'One Little Catelina',
     resave: false,
