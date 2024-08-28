@@ -35,7 +35,7 @@ router.post('/login', async (req, res) => {
     const user = await User.findOne({ where: { email } });
 
     if (user && (await bcrypt.compare(password, user.password))) {
-      req.session.userId = user.id;
+      req.session.userId = 1;
       console.log('Session userId before save:', req.session.userId);
 
       req.session.save(err => {
