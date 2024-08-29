@@ -15,6 +15,7 @@ An expense tracker application is a tool designed to help users manage their per
 - [Mockup](#mockup)
 - [Deployment](#deployment)
 - [Collaborators](#collaborators)
+- [Presentation](#presentation)
 - [License](#license)
 
 ## Features
@@ -62,7 +63,7 @@ An expense tracker application is a tool designed to help users manage their per
 
 ## Deployment
 
-- Render Deployment:
+- Render Deployment: https://spendwise-6ryg.onrender.com/ 
 
 ## Collaborators
 
@@ -70,6 +71,9 @@ An expense tracker application is a tool designed to help users manage their per
 2. Elisse Gomez- https://github.com/elissegomez24
 3. Brandon Willis- https://github.com/brandon6ix
 4. Melyana Lie- https://github.com/melyanalie
+
+## Presentation 
+https://docs.google.com/presentation/d/1wgqmR7yRuETNTtZdcxnIlnU18V8UVgacYvt4s55EG0w/edit#slide=id.p 
 
 ## License
 
