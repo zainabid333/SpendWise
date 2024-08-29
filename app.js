@@ -44,10 +44,12 @@ app.use(
 
 // Fetch user and store in res.locals
 app.use(async (req, res, next) => {
+  console.log('Session UserId before checking:', req.session.userId); // Debugging line
   if (req.session && req.session.userId) {
     try {
       const user = await User.findByPk(req.session.userId);
       res.locals.user = user ? user.get({ plain: true }) : null;
+      console.log('User fetched from database:', res.locals.user); // Debugging line
     } catch (err) {
       console.error('Error fetching user:', err);
       res.locals.user = null;
@@ -71,6 +73,7 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something went wrong!');
 });
 
+// Sync and start server
 sequelize.sync({ force: false }).then(() => {
   app.listen(PORT, () => console.log(`Now listening on port ${PORT}`));
 });
