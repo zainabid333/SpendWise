@@ -33,6 +33,9 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ where: { email } });
+    if (!user) {
+      console.log('User not found');
+    }
 
     if (user && (await bcrypt.compare(password, user.password))) {
       req.session.userId = 1;
