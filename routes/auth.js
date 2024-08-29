@@ -14,9 +14,13 @@ router.post('/signup', async (req, res) => {
       password: hashedPassword
     });
     req.session.userId = user.id; // Store the user ID in session
+    console.log('Session userId before save:', req.session.userId);
     req.session.save(err => {
       if (err) {
         console.error('Session save error:', err);
+        return res.status(500).render('signup', {
+          error: 'Failed to save session. Please try again.'
+        });
       }
       res.redirect('/dashboard'); // Redirect to dashboard after signup
     });
@@ -33,21 +37,26 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ where: { email } });
-
     if (user && (await bcrypt.compare(password, user.password))) {
-      req.session.userId = 1;
+      req.session.userId = user.id; // Correctly set the user ID
       console.log('Session userId before save:', req.session.userId);
 
       req.session.save(err => {
         if (err) {
           console.error('Session save error:', err);
-          return res.status(500).send('Failed to save session.');
+          return res.status(500).render('login', {
+            error: 'Failed to save session. Please try again.'
+          });
         }
         console.log('Session saved successfully:', req.session);
         res.redirect('/dashboard');
       });
+    } else if (!user) {
+      console.log('User not found');
+      res.status(400).render('login', { error: 'Invalid email or password.' });
     } else {
-      res.status(400).render('login', { error: 'Invalid password or email.' });
+      console.log(email, password, user.password);
+      res.status(400).render('login', { error: 'Invalid email or password.' });
     }
   } catch (error) {
     console.error('Login error:', error);
@@ -61,6 +70,7 @@ router.post('/login', async (req, res) => {
 router.get('/logout', (req, res) => {
   req.session.destroy(err => {
     if (err) {
+      console.error('Logout error:', err);
       return res.redirect('/dashboard');
     }
     res.clearCookie('connect.sid');

@@ -3,12 +3,16 @@ const exphbs = require('express-handlebars');
 const hbshelpers = require('./helpers/handlebars');
 const path = require('path');
 const session = require('express-session');
-const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const Sequelize = require('sequelize');
+const dotenv = require('dotenv');
 const sequelize = require('./config/connection');
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const { User } = require('./models');
-
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// Load environment variables
+dotenv.config();
 
 // Setup handlebars.js engine with custom helpers
 const hbs = exphbs.create({
@@ -73,7 +77,11 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something went wrong!');
 });
 
+<<<<<<< HEAD
 // Sync and start server
+=======
+// Sync Sequelize and start the server
+>>>>>>> e2cf2cda628372199f01c17471b2178769f33f24
 sequelize.sync({ force: false }).then(() => {
   app.listen(PORT, () => console.log(`Now listening on port ${PORT}`));
 });
