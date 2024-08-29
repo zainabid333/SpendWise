@@ -3,12 +3,16 @@ const exphbs = require('express-handlebars');
 const hbshelpers = require('./helpers/handlebars');
 const path = require('path');
 const session = require('express-session');
-const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const Sequelize = require('sequelize');
+const dotenv = require('dotenv');
 const sequelize = require('./config/connection');
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const { User } = require('./models');
-
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// Load environment variables
+dotenv.config();
 
 // Setup handlebars.js engine with custom helpers
 const hbs = exphbs.create({
@@ -33,7 +37,6 @@ app.use(
     store: new SequelizeStore({
       db: sequelize
     }),
-    userId: 'userId',
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -43,21 +46,21 @@ app.use(
   })
 );
 
-// // Fetch user and store in res.locals
-// app.use(async (req, res, next) => {
-//   if (req.session && req.session.userId) {
-//     try {
-//       const user = await User.findByPk(req.session.userId);
-//       res.locals.user = user ? user.get({ plain: true }) : null;
-//     } catch (err) {
-//       console.error('Error fetching user:', err);
-//       res.locals.user = null;
-//     }
-//   } else {
-//     res.locals.user = null;
-//   }
-//   next();
-// });
+// Fetch user and store in res.locals
+app.use(async (req, res, next) => {
+  if (req.session && req.session.userId) {
+    try {
+      const user = await User.findByPk(req.session.userId);
+      res.locals.user = user ? user.get({ plain: true }) : null;
+    } catch (err) {
+      console.error('Error fetching user:', err);
+      res.locals.user = null;
+    }
+  } else {
+    res.locals.user = null;
+  }
+  next();
+});
 
 // Routes
 app.use('/', require('./routes/index'));
@@ -72,6 +75,7 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something went wrong!');
 });
 
+// Sync Sequelize and start the server
 sequelize.sync({ force: false }).then(() => {
   app.listen(PORT, () => console.log(`Now listening on port ${PORT}`));
 });
