@@ -42,7 +42,6 @@ app.use(
     }
   })
 );
-console.log(userId);
 
 // Fetch user and store in res.locals
 app.use(async (req, res, next) => {
