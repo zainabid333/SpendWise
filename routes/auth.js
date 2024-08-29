@@ -33,9 +33,7 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ where: { email } });
-    if (!user) {
-      console.log('User not found');
-    } else if (user && (await bcrypt.compare(password, user.password))) {
+    if (user && (await bcrypt.compare(password, user.password))) {
       req.session.userId = 1;
       console.log('Session userId before save:', req.session.userId);
 
@@ -47,6 +45,8 @@ router.post('/login', async (req, res) => {
         console.log('Session saved successfully:', req.session);
         res.redirect('/dashboard');
       });
+    } else if (!user) {
+      console.log('User not found');
     } else {
       console.log(req.body.User.email);
       res.status(400).render('login', { error: 'Invalid password or email.' });
