@@ -77,11 +77,7 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something went wrong!');
 });
 
-<<<<<<< HEAD
-// Sync and start server
-=======
 // Sync Sequelize and start the server
->>>>>>> e2cf2cda628372199f01c17471b2178769f33f24
 sequelize.sync({ force: false }).then(() => {
   app.listen(PORT, () => console.log(`Now listening on port ${PORT}`));
 });
