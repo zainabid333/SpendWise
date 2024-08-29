@@ -3,11 +3,11 @@ const exphbs = require('express-handlebars');
 const hbshelpers = require('./helpers/handlebars');
 const path = require('path');
 const session = require('express-session');
-const Sequelize = require('sequelize');
-const dotenv = require('dotenv');
-const sequelize = require('./config/connection');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const sequelize = require('./config/connection');
 const { User } = require('./models');
+const dotenv = require('dotenv');
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -40,7 +40,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+      secure: process.env.NODE_ENV === 'production', // Set to false in development
       maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
   })
@@ -48,7 +48,10 @@ app.use(
 
 // Fetch user and store in res.locals
 app.use(async (req, res, next) => {
+  console.log('Session ID:', req.sessionID); // Check the session ID
+  console.log('Session Data:', req.session); // Check all session data
   console.log('Session UserId before checking:', req.session.userId); // Debugging line
+
   if (req.session && req.session.userId) {
     try {
       const user = await User.findByPk(req.session.userId);
