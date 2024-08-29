@@ -48,7 +48,7 @@ router.post('/login', async (req, res) => {
     } else if (!user) {
       console.log('User not found');
     } else {
-      console.log(req.body.User.email);
+      console.log(email, password, user.password);
       res.status(400).render('login', { error: 'Invalid password or email.' });
     }
   } catch (error) {
