@@ -5,9 +5,14 @@ const User = require('../models/User'); // Adjust the path as necessary
 const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS) || 10;
 
 // SignUp route
+// SignUp route
 router.post('/signup', async (req, res) => {
   try {
     const { username, email, password } = req.body;
+    console.log('Signup attempt with email:', email);
+    console.log('bcrypt version:', bcrypt.version);
+    console.log('Salt rounds:', saltRounds);
+
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     console.log('Hashed password:', hashedPassword);
 
@@ -37,10 +42,13 @@ router.post('/signup', async (req, res) => {
 });
 
 // Login route
+// Login route
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     console.log('Login attempt with email:', email);
+    console.log('bcrypt version:', bcrypt.version);
+    console.log('Salt rounds:', saltRounds);
 
     const user = await User.findOne({ where: { email } });
     if (!user) {
@@ -51,8 +59,10 @@ router.post('/login', async (req, res) => {
     }
 
     console.log('Stored hashed password:', user.password);
+    console.log('Raw password from request:', password);
+    console.log('Password buffer:', Buffer.from(password).toString('hex'));
 
-    const comparePassword = bcrypt.compareSync(password, user.password);
+    const comparePassword = await bcrypt.compare(password, user.password);
     console.log('Password comparison result:', comparePassword);
 
     if (comparePassword) {
