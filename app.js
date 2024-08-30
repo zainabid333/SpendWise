@@ -40,7 +40,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === 'production', // Set to false in development
+      // secure: false, // Set to false in development
       maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
   })
@@ -50,7 +50,7 @@ app.use(
 app.use(async (req, res, next) => {
   console.log('Session ID:', req.sessionID); // Check the session ID
   console.log('Session Data:', req.session); // Check all session data
-  console.log('Session UserId before checking:', req.session.userId); // Debugging line
+  // console.log('Session UserId before checking:', req.session.userId); // Debugging line
 
   if (req.session && req.session.userId) {
     try {
