@@ -37,12 +37,20 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ where: { email } });
-    const comparePassword = await bcrypt.compare(password, user.password);
 
-    if (user && comparePassword) {
+    if (!user) {
+      console.log('User not found');
+      return res
+        .status(400)
+        .render('login', { error: 'Invalid email or password.' });
+    }
+
+    const comparePassword = await bcrypt.compare(password, user.password);
+    console.log('Password comparison result:', comparePassword);
+
+    if (comparePassword) {
       req.session.userId = user.id; // Correctly set the user ID
       console.log('Session userId before save:', req.session.userId);
-      console.log(email, password, user.password);
       req.session.save(err => {
         if (err) {
           console.error('Session save error:', err);
@@ -53,11 +61,8 @@ router.post('/login', async (req, res) => {
         console.log('Session saved successfully:', req.session);
         res.redirect('/dashboard');
       });
-    } else if (!user) {
-      console.log('User not found');
-      res.status(400).render('login', { error: 'Invalid email or password.' });
     } else {
-      console.log(email, password, user.password);
+      console.log('Invalid password');
       res.status(400).render('login', { error: 'Invalid email or password.' });
     }
   } catch (error) {
