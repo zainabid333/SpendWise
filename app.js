@@ -6,9 +6,14 @@ const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const sequelize = require('./config/connection');
 const { User } = require('./models');
+const dotenv = require('dotenv');
+
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// Load environment variables
+dotenv.config();
 
 // Setup handlebars.js engine with custom helpers
 const hbs = exphbs.create({
@@ -36,7 +41,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+      // secure: false, // Set to false in development
       maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
   })

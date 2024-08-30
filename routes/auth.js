@@ -1,24 +1,39 @@
-const express = require('express');
 const bcrypt = require('bcrypt');
+const express = require('express');
 const router = express.Router();
-const { User } = require('../models');
+const User = require('../models/User'); // Adjust the path as necessary
+const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS) || 10;
+
+console.log('bcryptjs loaded:', !!bcrypt);
+console.log('bcryptjs version:', bcrypt.version);
 
 // SignUp route
 router.post('/signup', async (req, res) => {
   try {
     const { username, email, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
-    const user = await User.create({
+    console.log('Signup attempt with email:', email);
+    console.log('bcrypt version:', bcrypt.version);
+    console.log('Salt rounds:', saltRounds);
+
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    console.log('Hashed password:', hashedPassword);
+
+    const newUser = await User.create({
       username,
       email,
       password: hashedPassword
     });
-    req.session.userId = user.id; // Store the user ID in session
+
+    req.session.userId = newUser.id;
+    console.log('Session userId before save:', req.session.userId);
     req.session.save(err => {
       if (err) {
         console.error('Session save error:', err);
+        return res.status(500).render('signup', {
+          error: 'Failed to save session. Please try again.'
+        });
       }
-      res.redirect('/dashboard'); // Redirect to dashboard after signup
+      res.redirect('/dashboard');
     });
   } catch (error) {
     console.error('Signup error:', error);
@@ -32,22 +47,41 @@ router.post('/signup', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log('Login attempt with email:', email);
+    console.log('Salt rounds:', saltRounds);
+
     const user = await User.findOne({ where: { email } });
+    if (!user) {
+      console.log('User not found');
+      return res
+        .status(400)
+        .render('login', { error: 'Invalid email or password.' });
+    }
 
-    if (user && (await bcrypt.compare(password, user.password))) {
-      req.session.userId = 1;
+    console.log('Stored hashed password:', user.password);
+    console.log('Raw password from request:', password);
+
+    const comparePassword = await user.validPassword(password);
+    console.log('Password comparison result:', comparePassword);
+
+    if (comparePassword) {
+      req.session.userId = user.id;
       console.log('Session userId before save:', req.session.userId);
-
       req.session.save(err => {
         if (err) {
           console.error('Session save error:', err);
-          return res.status(500).send('Failed to save session.');
+          return res
+            .status(500)
+            .render('login', {
+              error: 'Failed to save session. Please try again.'
+            });
         }
         console.log('Session saved successfully:', req.session);
         res.redirect('/dashboard');
       });
     } else {
-      res.status(400).render('login', { error: 'Invalid password or email.' });
+      console.log('Invalid password');
+      res.status(400).render('login', { error: 'Invalid email or password.' });
     }
   } catch (error) {
     console.error('Login error:', error);
@@ -61,6 +95,7 @@ router.post('/login', async (req, res) => {
 router.get('/logout', (req, res) => {
   req.session.destroy(err => {
     if (err) {
+      console.error('Logout error:', err);
       return res.redirect('/dashboard');
     }
     res.clearCookie('connect.sid');
