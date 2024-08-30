@@ -1,49 +1,60 @@
-const { Model, DataTypes } = require("sequelize");
-const bcrypt = require("bcrypt");
+const { Sequelize,DataTypes } = require('sequelize');
+const sequelize = require('../config/connection');
+const bcrypt = require('bcryptjs');
 
-module.exports = (sequelize) => {
-  class User extends Model {
-    static associate(models) {
-      // define associations here
-    }
-
-    async comparePassword(candidatePassword) {
-      return await bcrypt.compare(candidatePassword, this.password);
-    }
-  }
-
-  User.init(
-    {
-      username: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-        validate: {
-          isEmail: true,
-        },
-      },
-      password: {
-        type: DataTypes.STRING,
-        allowNull: false,
+const User = sequelize.define(
+  'User',
+  {
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+      validate: {
+        isEmail: true,
       },
     },
-    {
-      sequelize,
-      modelName: "User",
-    }
-  );
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+  },
+  {
+    hooks: {
+      beforeCreate: async (user) => {
+        if (user.password) {
+          const salt = await bcrypt.genSalt(10);
+          user.password = await bcrypt.hash(user.password, salt);
+        }
+      },
+      beforeUpdate: async (user) => {
+        if (user.changed('password')) {
+          const salt = await bcrypt.genSalt(10);
+          user.password = await bcrypt.hash(user.password, salt);
+        }
+      },
+    },
+  }
+);
 
-  User.beforeCreate(async (user) => {
-    if (user.password) {
-      const salt = await bcrypt.genSalt(10);
-      user.password = await bcrypt.hash(user.password, salt);
-    }
-  });
-
-  return User;
+User.prototype.validPassword = async function (password) {
+  return await bcrypt.compare(password, this.password);
 };
+//Budget calculation
+User.prototype.calculateBudget = async function (name) {
+  const totalIncome = await this.getIncome({
+    attributes: [[sequelize.fn('sum', sequelize.col('amount')), 'total']],
+  });
+  const totalExpense = await this.getExpense({
+    attributes: [[sequelize.fn('sum', sequelize.col('amount')), 'total']],
+  });
+  const incomeTotal = totalIncome[0].dataValues.total || 0;
+  const expenseTotal = totalExpense[0].dataValues.total || 0;
+  return incomeTotal - expenseTotal;
+};
+
+module.exports = User;

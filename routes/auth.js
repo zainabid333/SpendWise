@@ -1,40 +1,83 @@
-const express = require("express");
+const express = require('express');
+const bcrypt = require('bcrypt');
 const router = express.Router();
-const { User } = require("../models");
+const { User } = require('../models');
 
-//Sign Up route
-router.post("/register", async (req, res) => {
-  const { username, password } = req.body;
+// SignUp route
+router.post('/signup', async (req, res) => {
   try {
-    const user = await User.create({ username, password });
-    res.status(201).json(user);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+    const { username, email, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
+    const user = await User.create({
+      username,
+      email,
+      password: hashedPassword
+    });
+    req.session.userId = user.id; // Store the user ID in session
+    console.log('Session userId before save:', req.session.userId);
+    req.session.save(err => {
+      if (err) {
+        console.error('Session save error:', err);
+        return res.status(500).render('signup', {
+          error: 'Failed to save session. Please try again.'
+        });
+      }
+      res.redirect('/dashboard'); // Redirect to dashboard after signup
+    });
+  } catch (error) {
+    console.error('Signup error:', error);
+    res
+      .status(400)
+      .render('signup', { error: 'Signup failed. Please try again.' });
   }
 });
 
-//Login Route
-router.post("/login", async (req, res) => {
+// Login route
+router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ where: { email } });
-    if (user && (await user.comparePassword(password))) {
-      req.session.userId = user.id;
-      res.json({ message: "Login successful", userId: user.id });
+    const comparePassword = await bcrypt.compare(password, user.password);
+
+    if (user && comparePassword) {
+      req.session.userId = user.id; // Correctly set the user ID
+      console.log('Session userId before save:', req.session.userId);
+      console.log(email, password, user.password);
+      req.session.save(err => {
+        if (err) {
+          console.error('Session save error:', err);
+          return res.status(500).render('login', {
+            error: 'Failed to save session. Please try again.'
+          });
+        }
+        console.log('Session saved successfully:', req.session);
+        res.redirect('/dashboard');
+      });
+    } else if (!user) {
+      console.log('User not found');
+      res.status(400).render('login', { error: 'Invalid email or password.' });
     } else {
-      res.status(401).json({ error: "Invalid credentials" });
+      console.log(email, password, user.password);
+      res.status(400).render('login', { error: 'Invalid email or password.' });
     }
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    console.error('Login error:', error);
+    res
+      .status(500)
+      .render('login', { error: 'Login failed. Please try again.' });
   }
 });
 
-//logout route
-router.get("/logout", (req, res) => {
-  req.session.destroy((err) => {
-    if (err) return res.status(500).json({ error: err.message });
+// Logout route
+router.get('/logout', (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      console.error('Logout error:', err);
+      return res.redirect('/dashboard');
+    }
+    res.clearCookie('connect.sid');
+    res.redirect('/login');
   });
-  res.json({ message: "Logout successful" });
 });
 
 module.exports = router;

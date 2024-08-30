@@ -1,13 +1,37 @@
-const Sequelize = require("sequelize");
-const sequelize = require("../config/connection");
-const UserModel = require("./User");
+const User = require('./User');
+const Expense = require('./Expense');
+const Category = require('./Category');
+const Income = require('./Income');
 
-const User = UserModel(sequelize);
+// Define associations here
+User.hasMany(Expense, {
+  foreignKey: 'userId',
+  as: 'expenses',
+});
 
-const db = {
-  sequelize,
-  Sequelize,
-  User,
-};
+Expense.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user',
+});
 
-module.exports = db;
+Category.hasMany(Expense, {
+  foreignKey: 'categoryId',
+  as: 'expenses',
+});
+
+Expense.belongsTo(Category, {
+  foreignKey: 'categoryId',
+  as: 'category',
+});
+
+//Income Association
+User.hasMany(Income, {
+  foreignKey: 'userId',
+  as: 'incomes',
+});
+Income.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user',
+});
+// Export models and sequelize connection
+module.exports = { User, Expense, Category, Income };
