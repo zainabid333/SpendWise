@@ -52,7 +52,7 @@ router.post('/login', async (req, res) => {
 
     console.log('Stored hashed password:', user.password);
 
-    const comparePassword = await bcrypt.compare(password, user.password);
+    const comparePassword = bcrypt.compareSync(password, user.password);
     console.log('Password comparison result:', comparePassword);
 
     if (comparePassword) {
