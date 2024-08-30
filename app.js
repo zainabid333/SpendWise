@@ -8,6 +8,7 @@ const sequelize = require('./config/connection');
 const { User } = require('./models');
 const dotenv = require('dotenv');
 
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -48,15 +49,10 @@ app.use(
 
 // Fetch user and store in res.locals
 app.use(async (req, res, next) => {
-  console.log('Session ID:', req.sessionID); // Check the session ID
-  console.log('Session Data:', req.session); // Check all session data
-  // console.log('Session UserId before checking:', req.session.userId); // Debugging line
-
   if (req.session && req.session.userId) {
     try {
       const user = await User.findByPk(req.session.userId);
       res.locals.user = user ? user.get({ plain: true }) : null;
-      console.log('User fetched from database:', res.locals.user); // Debugging line
     } catch (err) {
       console.error('Error fetching user:', err);
       res.locals.user = null;
@@ -80,7 +76,6 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something went wrong!');
 });
 
-// Sync Sequelize and start the server
 sequelize.sync({ force: false }).then(() => {
   app.listen(PORT, () => console.log(`Now listening on port ${PORT}`));
 });
