@@ -1,7 +1,7 @@
-const express = require('express');
 const bcrypt = require('bcrypt');
+const express = require('express');
 const router = express.Router();
-const { User } = require('../models');
+const User = require('../models/User'); // Adjust the path as necessary
 
 // SignUp route
 router.post('/signup', async (req, res) => {
@@ -36,14 +36,17 @@ router.post('/signup', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ where: { email } });
+    console.log('Login attempt with email:', email);
 
+    const user = await User.findOne({ where: { email } });
     if (!user) {
       console.log('User not found');
       return res
         .status(400)
         .render('login', { error: 'Invalid email or password.' });
     }
+
+    console.log('Stored hashed password:', user.password);
 
     const comparePassword = await bcrypt.compare(password, user.password);
     console.log('Password comparison result:', comparePassword);
