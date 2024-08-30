@@ -1,4 +1,4 @@
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User'); // Adjust the path as necessary
@@ -7,7 +7,6 @@ const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS) || 10;
 console.log('bcryptjs loaded:', !!bcrypt);
 console.log('bcryptjs version:', bcrypt.version);
 
-// SignUp route
 // SignUp route
 router.post('/signup', async (req, res) => {
   try {
@@ -44,7 +43,6 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-// Login route
 // Login route
 router.post('/login', async (req, res) => {
   try {
