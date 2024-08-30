@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User'); // Adjust the path as necessary
-const saltRounds = 10;
+const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS) || 10;
 
 // SignUp route
 router.post('/signup', async (req, res) => {
