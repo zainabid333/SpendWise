@@ -1,8 +1,11 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User'); // Adjust the path as necessary
 const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS) || 10;
+
+console.log('bcryptjs loaded:', !!bcrypt);
+console.log('bcryptjs version:', bcrypt.version);
 
 // SignUp route
 // SignUp route
@@ -47,7 +50,6 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     console.log('Login attempt with email:', email);
-    console.log('bcrypt version:', bcrypt.version);
     console.log('Salt rounds:', saltRounds);
 
     const user = await User.findOne({ where: { email } });
@@ -60,9 +62,8 @@ router.post('/login', async (req, res) => {
 
     console.log('Stored hashed password:', user.password);
     console.log('Raw password from request:', password);
-    console.log('Password buffer:', Buffer.from(password).toString('hex'));
 
-    const comparePassword = await bcrypt.compare(password, user.password);
+    const comparePassword = await user.validPassword(password);
     console.log('Password comparison result:', comparePassword);
 
     if (comparePassword) {
@@ -71,9 +72,11 @@ router.post('/login', async (req, res) => {
       req.session.save(err => {
         if (err) {
           console.error('Session save error:', err);
-          return res.status(500).render('login', {
-            error: 'Failed to save session. Please try again.'
-          });
+          return res
+            .status(500)
+            .render('login', {
+              error: 'Failed to save session. Please try again.'
+            });
         }
         console.log('Session saved successfully:', req.session);
         res.redirect('/dashboard');
