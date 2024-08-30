@@ -2,18 +2,22 @@ const bcrypt = require('bcrypt');
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User'); // Adjust the path as necessary
+const saltRounds = 10;
 
 // SignUp route
 router.post('/signup', async (req, res) => {
   try {
     const { username, email, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
-    const user = await User.create({
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    console.log('Hashed password:', hashedPassword);
+
+    const newUser = await User.create({
       username,
       email,
       password: hashedPassword
     });
-    req.session.userId = user.id; // Store the user ID in session
+
+    req.session.userId = newUser.id;
     console.log('Session userId before save:', req.session.userId);
     req.session.save(err => {
       if (err) {
@@ -22,7 +26,7 @@ router.post('/signup', async (req, res) => {
           error: 'Failed to save session. Please try again.'
         });
       }
-      res.redirect('/dashboard'); // Redirect to dashboard after signup
+      res.redirect('/dashboard');
     });
   } catch (error) {
     console.error('Signup error:', error);
@@ -52,7 +56,7 @@ router.post('/login', async (req, res) => {
     console.log('Password comparison result:', comparePassword);
 
     if (comparePassword) {
-      req.session.userId = user.id; // Correctly set the user ID
+      req.session.userId = user.id;
       console.log('Session userId before save:', req.session.userId);
       req.session.save(err => {
         if (err) {
